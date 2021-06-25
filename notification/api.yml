@@ -1,0 +1,185 @@
+openapi: '3.0.0'
+info:
+  version: 0.0.3
+  title: Zam.io Получение уведомлений о зачислении средств
+  description: "Zam.io Получение уведомлений о зачислении средств"
+servers:
+  - url: https://zam.io
+paths:
+  '/api/notifications':
+    get:
+      summary: Запрос новых уведомлений
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: offset
+          in: query
+          description: С какой строки начинать отображение списка
+          required: false
+          schema:
+            type: integer            
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          description: Количество получаемых уведомлений за один запрос
+          required: false
+          schema:
+            type: integer            
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  data:
+                    $ref: '#/components/schemas/NotificationListData'
+        '400':
+          description: Некорректный формат входных параметров
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '408':
+          description: Время ожидания истекло
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Meta:
+      type: object
+      description: Метаинформация об ответе
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Текстовый код исключения
+          enum:
+            - 'OK' #statuscode=200
+          example: 'OK'
+        message:
+          type: string
+          description: Дополнительная информация
+          enum:
+            - 'Операция выполнена' #statuscode=200
+          example: 'Операция выполнена'
+        description:
+          type: string
+          description: Пользовательская информация о результате выполнения метода
+          example: 'Запрос получен. Ожидайте выполнения'
+    NotificationListData:
+      type: object
+      properties:
+        notifications:
+          description: Список уведомлений с пагинацией
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationData'
+        pagination:
+          $ref: '#/components/schemas/PaginationData'
+    PaginationData:
+      type: object
+      description: Пагинация
+      properties:
+        offset:
+          type: integer
+          description: С какой строки начинать отображение списка
+          example: 0
+        limit:
+          type: integer
+          description: Количество получаемых уведомлений за один запрос
+          example: 10
+        total:
+          type: integer
+          description: Общее количество уведомлений
+          example: 100
+    NotificationData:
+      description: Уведомление
+      type: object
+      properties:
+        title:
+          type: string
+          description: Текст заголовка
+          example: 'Зачисление средств'
+        text:
+          description: Текст уведомления
+          type: string
+          example: 'Зачислено 2,1 эфира на Ваш кошелек (адрес ...), с адреса ... в 09:02:57 18.06.2021г.'
+        date:
+          description: Дата и время создания уведомления
+          type: string
+          format: date-time
+          example: '18-06-2021T09:02:57+03:00'
+        read:
+          description: Пометка о прочтении
+          type: boolean
+          example: true
+    ExceptionResult:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/ExceptionMeta'
+        data:
+          type: object
+    ExceptionMeta:
+      type: object
+      description: Метаинформация об ответе
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Текстовый код исключения
+          enum:
+            - 'BAD_REQUEST' #statuscode=400
+            - 'UNAUTHORIZED' #STATUSCODE=401
+            - 'FORBIDDEN' #STATUSCODE=403
+            - 'NOT_FOUND' #STATUSCODE=404
+            - 'REQUEST_TIMEOUT' #STATUSCODE=408
+            - 'ERROR' #statuscode IN [500,503]
+          example: 'ERROR'
+        message:
+          type: string
+          description: Дополнительная информация
+          enum:
+            - 'Набор параметров или тип указаны неверно' #statuscode=400
+            - 'Ошибка авторизации' #statuscode=401
+            - 'Недостаточно прав для получения информации' #statuscode=403
+            - 'Данные не найдены' #statuscode=404
+            - 'Время ожидания истекло' #statuscode=408
+            - 'Внутренняя ошибка сервера' #statuscode=500
+            - 'Сервис недоступен' #statuscode=503
+          example: 'Сервис недоступен'
+        description:
+          type: string
+          description: Пользовательская информация о результате выполнения метода
+

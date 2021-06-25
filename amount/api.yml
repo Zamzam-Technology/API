@@ -1,0 +1,145 @@
+openapi: '3.0.0'
+info:
+  version: 0.0.3
+  title: Zam.io Получить текущий баланс по всем подключенным криптовалютным кошелькам
+  description: "Zam.io Получить текущий баланс по всем подключенным криптовалютным кошелькам"
+servers:
+  - url: https://zam.io
+
+paths:
+  '/api/amount':
+    get:
+      summary: запрос баланса всех подключенных криптовалютных кошельков
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AmountResponseData'
+        '400':
+          description: Некорректный формат входных параметров
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '408':
+          description: Время ожидания истекло
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Meta:
+      type: object
+      description: Метаинформация об ответе
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Текстовый код исключения
+          enum:
+            - 'OK' #statuscode=200
+          example: 'OK'
+        message:
+          type: string
+          description: Дополнительная информация
+          enum:
+            - 'Операция выполнена' #statuscode=200
+          example: 'Операция выполнена'
+        description:
+          type: string
+          description: Пользовательская информация о результате выполнения метода
+          example: 'Запрос получен. Ожидайте выполнения'
+    AmountResponseData:
+      type: object
+      description: баланс криптовалютного кошелька
+      required:
+        - blockchain
+        - address
+        - currency
+        - amount
+      properties:
+        blockchain:
+          type: string
+          description: наименование платформы
+        addressContract:
+          type: string
+          description: адрес размещения контракта токена
+        address:
+          type: string
+          description: адрес кошелька
+        currency:
+          type: string
+          description: сокращение криптовалюты
+        amount:
+          type: string
+          description: текущий баланс
+    ExceptionResult:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/ExceptionMeta'
+        data:
+          type: object
+    ExceptionMeta:
+      type: object
+      description: Метаинформация об ответе
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Текстовый код исключения
+          enum:
+            - 'BAD_REQUEST' #statuscode=400
+            - 'UNAUTHORIZED' #STATUSCODE=401
+            - 'FORBIDDEN' #STATUSCODE=403
+            - 'NOT_FOUND' #STATUSCODE=404
+            - 'REQUEST_TIMEOUT' #STATUSCODE=408
+            - 'ERROR' #statuscode IN [500,503]
+          example: 'ERROR'
+        message:
+          type: string
+          description: Дополнительная информация
+          enum:
+            - 'Набор параметров или тип указаны неверно' #statuscode=400
+            - 'Ошибка авторизации' #statuscode=401
+            - 'Недостаточно прав для получения информации' #statuscode=403
+            - 'Данные не найдены' #statuscode=404
+            - 'Время ожидания истекло' #statuscode=408
+            - 'Внутренняя ошибка сервера' #statuscode=500
+            - 'Сервис недоступен' #statuscode=503
+          example: 'Сервис недоступен'
+        description:
+          type: string
+          description: Пользовательская информация о результате выполнения метода

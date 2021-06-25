@@ -1,0 +1,184 @@
+openapi: '3.0.0'
+info:
+  version: 0.0.3
+  title: Zam.io Получить историю операций по указанному криптовалютному кошельку
+  description: "Zam.io Получить историю операций по указанному криптовалютному кошельку"
+servers:
+  - url: https://zam.io
+
+paths:
+  '/api/history':
+    get:
+      summary: запрос истории операций по указанному криптовалютному кошельку
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HistoryResponseData'
+        '400':
+          description: Некорректный формат входных параметров
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '408':
+          description: Время ожидания истекло
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Meta:
+      type: object
+      description: Метаинформация об ответе
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Текстовый код исключения
+          enum:
+            - 'OK' #statuscode=200
+          example: 'OK'
+        message:
+          type: string
+          description: Дополнительная информация
+          enum:
+            - 'Операция выполнена' #statuscode=200
+          example: 'Операция выполнена'
+        description:
+          type: string
+          description: Пользовательская информация о результате выполнения метода
+          example: 'Запрос получен. Ожидайте выполнения'
+    HistoryResponseData:
+      type: object
+      description: информация о транзакции
+      required:
+        - blockchainFrom
+        - blockchainTo
+        - addressFrom
+        - addressTo
+        - currencyFrom
+        - currencyTo
+        - amount
+        - paymentTransaction
+        - commission
+        - dateCreate
+        - dateConfirm
+      properties:
+        blockchainFrom:
+          type: string
+          description: наименование искомой платформы
+        blockchainTo:
+          type: string
+          description: наименование целевой платформы
+        addressContractFrom:
+          type: string
+          description: адрес контракта искомого кошелька
+        addressContractTo:
+          type: string
+          description: адрес контракта целевого кошелька
+        adressFrom:
+          type: string
+          description: искомый адрес кошелька
+        addressTo:
+          type: string
+          description: целевой адрес кошелька
+        currency:
+          type: string
+          description: сокращение криптовалюты
+        amount:
+          type: string
+          description: количество криптовалюты
+        commission:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommissionData'
+        dateCreate:
+          type: string
+          description: дата и время создания транзакции
+        dateConfirm:
+          type: string
+          description: дата и время закрытия транзакции
+    CommissionData:
+      type: object
+      description: информация о комиссиях транзакции
+      required:
+        - paymentTransaction
+        - commission
+      properties:
+        paymentTransaction:
+          type: string
+          description: оплата за рассчет транзакции
+        commissionTransaction:
+          type: string
+          description: комиссия за совершение транзакции
+    ExceptionResult:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/ExceptionMeta'
+        data:
+          type: object
+    ExceptionMeta:
+      type: object
+      description: Метаинформация об ответе
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Текстовый код исключения
+          enum:
+            - 'BAD_REQUEST' #statuscode=400
+            - 'UNAUTHORIZED' #STATUSCODE=401
+            - 'FORBIDDEN' #STATUSCODE=403
+            - 'NOT_FOUND' #STATUSCODE=404
+            - 'REQUEST_TIMEOUT' #STATUSCODE=408
+            - 'ERROR' #statuscode IN [500,503]
+          example: 'ERROR'
+        message:
+          type: string
+          description: Дополнительная информация
+          enum:
+            - 'Набор параметров или тип указаны неверно' #statuscode=400
+            - 'Ошибка авторизации' #statuscode=401
+            - 'Недостаточно прав для получения информации' #statuscode=403
+            - 'Данные не найдены' #statuscode=404
+            - 'Время ожидания истекло' #statuscode=408
+            - 'Внутренняя ошибка сервера' #statuscode=500
+            - 'Сервис недоступен' #statuscode=503
+          example: 'Сервис недоступен'
+        description:
+          type: string
+          description: Пользовательская информация о результате выполнения метода

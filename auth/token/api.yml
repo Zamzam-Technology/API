@@ -1,0 +1,166 @@
+openapi: '3.0.0'
+info:
+  version: 0.0.3
+  title: Zam.io Получение/обновление токена пользователя
+  description: "Zam.io Получение/обновление токена пользователя"
+servers:
+  - url: https://zam.io
+
+paths:
+  '/api/auth/token':
+    post:
+      summary: запрос обновления токена
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequestData'
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  data:
+                    $ref: '#/components/schemas/TokenResponseData'
+        '400':
+          description: Некорректный формат входных параметров
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '404':
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '408':
+          description: Время ожидания истекло
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionResult'
+components:
+  schemas:
+    Meta:
+      type: object
+      description: Метаинформация об ответе
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Текстовый код исключения
+          enum:
+            - 'OK' #statuscode=200
+          example: 'OK'
+        message:
+          type: string
+          description: Дополнительная информация
+          enum:
+            - 'Операция выполнена' #statuscode=200
+          example: 'Операция выполнена'
+        description:
+          type: string
+          description: Пользовательская информация о результате выполнения метода
+          example: 'Запрос получен. Ожидайте выполнения'
+    TokenRequestData:
+      type: object
+      description: запрос токена авторизации (старый токен + uuid устройства, при несовпадении - логин/пароль)
+      properties:
+        token:
+          type: string
+          description: последний устаревший токен
+        deviceId:
+          type: string
+          description: id устройства
+        login:
+          type: string
+          description: логин пользователя
+        password:
+          type: string
+          description: хэш пароля пользователя
+    TokenResponseData:
+      type: object
+      description: ответ на запрос токена авторизации
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: токен авторизации
+        agreement:
+          $ref: '#/components/schemas/DocumentData'
+    DocumentData:
+      type: object
+      description: Соглашение для подтверждения, возвращать - если соглашение обновилось с момента подтверждения
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '173e4567-e89b-12d3-a456-426624174000'
+        name:
+          type: string
+          description: Наименование файла
+          example: 'Соглашение о конфиденциальности данных'
+        url:
+          type: string
+          description: Относительная ссылка на файл
+          example: '/api/auth/documents/173e4567-e89b-12d3-a456-426614174000'
+    ExceptionResult:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/ExceptionMeta'
+        data:
+          type: object
+    ExceptionMeta:
+      type: object
+      description: Метаинформация об ответе
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Текстовый код исключения
+          enum:
+            - 'BAD_REQUEST' #statuscode=400
+            - 'UNAUTHORIZED' #STATUSCODE=401
+            - 'FORBIDDEN' #STATUSCODE=403
+            - 'NOT_FOUND' #STATUSCODE=404
+            - 'REQUEST_TIMEOUT' #STATUSCODE=408
+            - 'ERROR' #statuscode IN [500,503]
+          example: 'ERROR'
+        message:
+          type: string
+          description: Дополнительная информация
+          enum:
+            - 'Набор параметров или тип указаны неверно' #statuscode=400
+            - 'Ошибка авторизации' #statuscode=401
+            - 'Недостаточно прав для получения информации' #statuscode=403
+            - 'Данные не найдены' #statuscode=404
+            - 'Время ожидания истекло' #statuscode=408
+            - 'Внутренняя ошибка сервера' #statuscode=500
+            - 'Сервис недоступен' #statuscode=503
+          example: 'Сервис недоступен'
+        description:
+          type: string
+          description: Пользовательская информация о результате выполнения метода
