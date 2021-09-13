@@ -48,6 +48,7 @@ A safe wallet to store, manage, send, and receive digital assets. Users need an 
 * [API's yaml](https://github.com/Zamzam-Technology/API/blob/main/ZAM.IO_API_PROTOTYPE_yaml.yml)
 * [API's swagger](https://github.com/Zamzam-Technology/API/blob/main/ZAM.IO_API_PROTOTYPE_swagger.json)
 * [API's postman collection](https://github.com/Zamzam-Technology/API/blob/main/API_Postman_Collection.json)
+* [API documentation page](https://documenter.getpostman.com/view/11341447/TzzAKvaB)
 
 # General API information
 The Zam.io API that serves for creating and managing Your wallet:
