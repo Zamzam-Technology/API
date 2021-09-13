@@ -1,0 +1,5257 @@
+{
+	"info": {
+		"_postman_id": "05fb178e-b5d2-43c6-9038-d98e9daea0d8",
+		"name": "Zam.io API",
+		"description": "A safe wallet to store, manage, send, and receive digital assets. Users need an easy way to access and manage their digital assets. ZamWallet is an application for iOS and Android that allows users to store, access, manage, send, and receive crypto directly from their mobile phones.\n\n## General API information\n\nThe Zam.io API that serves for creating and managing Your wallet: \n* Registration and account management\n* Cryptocurrency buy/sell orders\n* Working with external wallets\n* Ability to update rate information\n\nFor more information visit [description page](https://github.com/Hz31415/API/blob/gh-pages/test.md)\n\n## HTTP Return Codes\n\n* HTTP `4XX` return codes are used for malformed requests;\n  the issue is on the sender's side.\n* HTTP `400` return code is used when the WAF Limit (Web Application Firewall) has been violated.\n* HTTP `404` return code is used when requested data not found.\n* HTTP `408` return code is used when request timeout exceeded.\n* HTTP `5XX` return codes are used for internal errors; the issue is on\n  Zam's side.\n  It is important to **NOT** treat this as a failure operation; the execution status is\n  **UNKNOWN** and could have been a success.\n* HTTP `500` return code is used when internal server error occured.\n* HTTP `503` return code is used when requested service is unreachable.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Account management requests",
+			"item": [
+				{
+					"name": "New User registration",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"phone\": \"0647744360\",\n \"fullName\": \"Name Surname\",\n \"refCode\": \"{referral code}\",\n \"codeRequest\": {\n  \"phone\": \"0647744360\"\n }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth"
+							]
+						},
+						"description": "New user registration request. Request fields:\n\n•\tphone(string): User’s phone number. Should contain at least 10 characters.\n\n•\tfullName(string): User’s full name(Surname, Name, Patronymic/Middle Name).\n\n•\trefCode(string): The referral code that user received if was invited.\n\n•\tcodeRequest(object): Subrequest for number verification. Contains “phone” field that was mentioned above."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0647744360\",\n    \"fullName\": \"Name Surname\",\n    \"refCode\": \"{referral code}\",\n    \"codeRequest\": {\n        \"phone\": \"0647744360\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"meta\": {\n  \"status\": \"OK\",\n  \"message\": \"Success\"\n },\n \"data\": {\n  \"passportMessage\": \"Passport phrase\",\n  \"agreement\": {\n   \"id\": \"173e4567-e89b-12d3-a456-426624174000\",\n   \"name\": \"Security agreement\",\n   \"url\": \"/api/auth/documents/173e4567-e89b-12d3-a456-426614174000\"\n  }\n }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"name": "Content-Type",
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0647744360\",\n    \"fullName\": \"tempor laboris ipsum esse\",\n    \"refCode\": \"ullamco\",\n    \"codeRequest\": {\n        \"phone\": \"62038729829242\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request Timeout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"name": "Content-Type",
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0647744360\",\n    \"fullName\": \"tempor laboris ipsum esse\",\n    \"refCode\": \"ullamco\",\n    \"codeRequest\": {\n        \"phone\": \"62038729829242\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"name": "Content-Type",
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0647744360\",\n    \"fullName\": \"tempor laboris ipsum esse\",\n    \"refCode\": \"ullamco\",\n    \"codeRequest\": {\n        \"phone\": \"62038729829242\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0647744360\",\n    \"fullName\": \"tempor laboris ipsum esse\",\n    \"refCode\": \"ullamco\",\n    \"codeRequest\": {\n        \"phone\": \"62038729829242\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Password Change",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"oldPassword\": \"{Old password's hash}\",\n    \"newPassword\": \"{New password's hash}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/change",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"change"
+							]
+						},
+						"description": "Simple password change request."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"oldPassword\": \"ut proident\",\n    \"newPassword\": \"sit laborum proident nisi do\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/change",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"change"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"meta\": {\n  \"status\": \"OK\",\n  \"message\": \"Success\"\n }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"oldPassword\": \"ut proident\",\n    \"newPassword\": \"sit laborum proident nisi do\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/change",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"change"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"meta\": {\n  \"status\": \"OK\",\n  \"message\": \"ERROR - Invalid input format\"\n },\n \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"oldPassword\": \"ut proident\",\n    \"newPassword\": \"sit laborum proident nisi do\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/change",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"change"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"meta\": {\n  \"status\": \"OK\",\n  \"message\": \"ERROR - Request timeout\"\n },\n \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"oldPassword\": \"ut proident\",\n    \"newPassword\": \"sit laborum proident nisi do\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/change",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"change"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"meta\": {\n  \"status\": \"OK\",\n  \"message\": \"ERROR - Internal server error\"\n },\n \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									},
+									{
+										"name": "Content-Type",
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"oldPassword\": \"ut proident\",\n    \"newPassword\": \"sit laborum proident nisi do\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/change",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"change"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Request for security agreements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/documents/:documentId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"documents",
+								":documentId"
+							],
+							"variable": [
+								{
+									"key": "documentId",
+									"value": "173e4567-e89b-12d3-a456-426614174000",
+									"description": "(Required) Document ID"
+								}
+							]
+						},
+						"description": "Security agreement for user to accept."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/documents/:documentId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"documents",
+										":documentId"
+									],
+									"variable": [
+										{
+											"key": "documentId"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/*"
+								}
+							],
+							"cookie": [],
+							"body": "Security agreement file"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/documents/:documentId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"documents",
+										":documentId"
+									],
+									"variable": [
+										{
+											"key": "documentId"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Not found\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/documents/:documentId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"documents",
+										":documentId"
+									],
+									"variable": [
+										{
+											"key": "documentId"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/documents/:documentId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"documents",
+										":documentId"
+									],
+									"variable": [
+										{
+											"key": "documentId"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/documents/:documentId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"documents",
+										":documentId"
+									],
+									"variable": [
+										{
+											"key": "documentId"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/delete",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"delete"
+							]
+						},
+						"description": "Request to delete authorized account."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/delete",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"delete"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Ivalid input data",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/delete",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"delete"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/delete",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"delete"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Not found\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/delete",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"delete"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server eroor",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/delete",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"delete"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/delete",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"delete"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Generate private key",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/privateKey",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"privateKey"
+							]
+						},
+						"description": "Request for Zam wallet's private key generation."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/privateKey",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"privateKey"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"privateKey\": \"bd0c8e3bd998a500b0984584a7245ca0\"\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/privateKey",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"privateKey"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/privateKey",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"privateKey"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/privateKey",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"privateKey"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/privateKey",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"privateKey"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Update token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"94a08da1fecbb6e8b46990538c7b50b2\",\n    \"deviceId\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"login\": \"UserName\",\n    \"password\": \"fb29ed3264c5a92bcf74eccd7489e828\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"token"
+							]
+						},
+						"description": "Request for authorization token. Contains 4 fields (all are string type):\n\n•\ttoken: Last expired token\n\n•\tdeviceId: Device’s UUID\n\n•\tlogin: User’s login\n\n•\tpassword: Hash of user’s password"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"irure ut eiusmod in\",\n    \"deviceId\": \"amet d\",\n    \"login\": \"velit consectetur ut irure\",\n    \"password\": \"in ut et\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/token",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"token\": \"94a08da1fecbb6e8b46990538c7b50b2\",\n        \"agreement\": {\n            \"id\": \"173e4567-e89b-12d3-a456-426624174000\",\n            \"name\": \"Security agreement\",\n            \"url\": \"/api/auth/documents/173e4567-e89b-12d3-a456-426614174000\"\n        }\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"irure ut eiusmod in\",\n    \"deviceId\": \"amet d\",\n    \"login\": \"velit consectetur ut irure\",\n    \"password\": \"in ut et\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/token",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"token"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"irure ut eiusmod in\",\n    \"deviceId\": \"amet d\",\n    \"login\": \"velit consectetur ut irure\",\n    \"password\": \"in ut et\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/token",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"token"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Not found\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"irure ut eiusmod in\",\n    \"deviceId\": \"amet d\",\n    \"login\": \"velit consectetur ut irure\",\n    \"password\": \"in ut et\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/token",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"token"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"irure ut eiusmod in\",\n    \"deviceId\": \"amet d\",\n    \"login\": \"velit consectetur ut irure\",\n    \"password\": \"in ut et\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/token",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"token"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"irure ut eiusmod in\",\n    \"deviceId\": \"amet d\",\n    \"login\": \"velit consectetur ut irure\",\n    \"password\": \"in ut et\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/token",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"token"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Order requests",
+			"item": [
+				{
+					"name": "Request for transaction order generation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/order?priority=MEDIUM&blockchainFrom=Binance&blockchainTo=Binance&addressContractFrom=STRING&addressContractTo=STRING&adressFrom=cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5&addressTo=12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH&amount=3.45&paymentRestrictionTransaction=STRING",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"order"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "MEDIUM",
+									"description": "Transaction priority (default value - MEDIUM)"
+								},
+								{
+									"key": "blockchainFrom",
+									"value": "Binance",
+									"description": "(Required) source platform name"
+								},
+								{
+									"key": "blockchainTo",
+									"value": "Binance",
+									"description": "(Required) destiantion platform name"
+								},
+								{
+									"key": "addressContractFrom",
+									"value": "STRING",
+									"description": "Contract adrress on source wallet"
+								},
+								{
+									"key": "addressContractTo",
+									"value": "STRING",
+									"description": "Contract address on destiantion wallet"
+								},
+								{
+									"key": "adressFrom",
+									"value": "cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5",
+									"description": "(Required) soruce wallet address"
+								},
+								{
+									"key": "addressTo",
+									"value": "12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH",
+									"description": "(Required) destiantion wallet address"
+								},
+								{
+									"key": "amount",
+									"value": "3.45",
+									"description": "(Required) cryptrocurrency amount"
+								},
+								{
+									"key": "paymentRestrictionTransaction",
+									"value": "STRING",
+									"description": "Payment restriction for transaction"
+								}
+							]
+						},
+						"description": "Request for transaction order to buy/sell cryptocurrency. Headers of request are described below"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order?priority=MEDIUM&blockchainFrom=Binance&blockchainTo=Binance&addressContractFrom=STRING&addressContractTo=STRING&adressFrom=cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5&addressTo=12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH&amount=3.45&paymentRestrictionTransaction=STRING",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "Binance"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "Binance"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "STRING"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "STRING"
+										},
+										{
+											"key": "adressFrom",
+											"value": "cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5"
+										},
+										{
+											"key": "addressTo",
+											"value": "12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH"
+										},
+										{
+											"key": "amount",
+											"value": "3.45"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "STRING"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"blockchainFrom\": \"Binance\",\n        \"blockchainTo\": \"Binance\",\n        \"addressTo\": \"12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH\",\n        \"amount\": \"3.45\",\n        \"dateCreate\": \"1947-04-26T15:41:07.646Z\",\n        \"addressContractFrom\": \"STRING\",\n        \"addressContractTo\": \"STRING\",\n        \"adressFrom\": \"cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5\",\n        \"currency\": \"BTC\"\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Order for cyptocurrency buy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/order/purchase?priority=MEDIUM&blockchainTo=Binance&addressContractTo=STRING&addressTo=12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH&amount=3.45&paymentRestrictionTransaction=STRING",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"purchase"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "MEDIUM",
+									"description": "Transaction priority (default value - MEDIUM)"
+								},
+								{
+									"key": "blockchainTo",
+									"value": "Binance",
+									"description": "(Required) destiantion platform name"
+								},
+								{
+									"key": "addressContractTo",
+									"value": "STRING",
+									"description": "Contract address on destiantion wallet"
+								},
+								{
+									"key": "addressTo",
+									"value": "12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH",
+									"description": "(Required) destiantion wallet address"
+								},
+								{
+									"key": "amount",
+									"value": "3.45",
+									"description": "(Required) cryptrocurrency amount to buy"
+								},
+								{
+									"key": "paymentRestrictionTransaction",
+									"value": "STRING",
+									"description": "Payment restriction for transaction"
+								}
+							]
+						},
+						"description": "The buy operation that follows after receiving transaction order."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order/purchase?priority=MEDIUM&blockchainTo=Binance&addressContractTo=STRING&addressTo=12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH&amount=3.45&paymentRestrictionTransaction=STRING",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"purchase"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "Binance"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "STRING"
+										},
+										{
+											"key": "addressTo",
+											"value": "12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH"
+										},
+										{
+											"key": "amount",
+											"value": "3.45"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "STRING"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"blockchainTo\": \"Binance\",\n        \"addressTo\": \"12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH\",\n        \"amount\": \"3.45\",\n        \"dateCreate\": \"1947-04-26T15:41:07.646Z\",\n        \"order\": \"STRING\",\n        \"addressContractTo\": \"STRING\",\n        \"currency\": \"BTC\"\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									},
+									{
+										"name": "Content-Type",
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/order/purchase?priority=MEDIUM&blockchainTo=do adipisicing&addressContractTo=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"purchase"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order/purchase?priority=MEDIUM&blockchainTo=do adipisicing&addressContractTo=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"purchase"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order/purchase?priority=MEDIUM&blockchainTo=do adipisicing&addressContractTo=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"purchase"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unrechable",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/order/purchase?priority=MEDIUM&blockchainTo=do adipisicing&addressContractTo=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"purchase"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Order for cyptocurrency sell",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"spbPhone1\": \"\",\n    \"spbName1\": \"\",\n    \"visaCardNumber2\": \"\",\n    \"visaName2\": \"\",\n    \"masterCardNumber3\": \"\",\n    \"masterName3\": \"\",\n    \"bankAccountPaymentAccount4\": \"\",\n    \"bankAccountBIK4\": \"\",\n    \"bankAccountName4\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/order/sale?priority=MEDIUM&blockchainFrom=Binance&blockchainTo=Binance&addressContractFrom=STRING&addressContractTo=STRING&adressFrom=3.45&addressTo=cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5&amount=12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH&paymentRestrictionTransaction=STRING",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"sale"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "MEDIUM",
+									"description": "Transaction priority (default value - MEDIUM)"
+								},
+								{
+									"key": "blockchainFrom",
+									"value": "Binance",
+									"description": "(Required) source platform name"
+								},
+								{
+									"key": "blockchainTo",
+									"value": "Binance",
+									"description": "(Required) destiantion platform name (measured wallet on Zam side)"
+								},
+								{
+									"key": "addressContractFrom",
+									"value": "STRING",
+									"description": "Contract adrress on source wallet"
+								},
+								{
+									"key": "addressContractTo",
+									"value": "STRING",
+									"description": "Contract address on destiantion wallet (measured wallet on Zam side)"
+								},
+								{
+									"key": "adressFrom",
+									"value": "3.45",
+									"description": "(Required) soruce wallet address"
+								},
+								{
+									"key": "addressTo",
+									"value": "cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5",
+									"description": "(Required) destiantion wallet address (measured wallet on Zam side)"
+								},
+								{
+									"key": "amount",
+									"value": "12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH",
+									"description": "(Required) cryptrocurrency amount to sell"
+								},
+								{
+									"key": "paymentRestrictionTransaction",
+									"value": "STRING",
+									"description": "Payment restriction for transaction"
+								}
+							]
+						},
+						"description": "The sell operation that follows after receiving transaction order."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"spbPhone1\": \"dolore qui cillum\",\n    \"spbName1\": \"dolor nulla laboris esse do\",\n    \"visaCardNumber2\": \"dolore minim commodo\",\n    \"visaName2\": \"do fugiat\",\n    \"masterCardNumber3\": \"et nisi minim quis\",\n    \"masterName3\": \"irure\",\n    \"bankAccountPaymentAccount4\": \"ad\",\n    \"bankAccountBIK4\": \"dolor aliquip cillum exercitation\",\n    \"bankAccountName4\": \"quis\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/order/sale?priority=MEDIUM&blockchainFrom=asdf&blockchainTo=asdf&addressContractFrom=asdf&addressContractTo=asdf&adressFrom=asdf&addressTo=asdf&amount=34.00&paymentRestrictionTransaction=STRING",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"sale"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "asdf"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "asdf"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "asdf"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "asdf"
+										},
+										{
+											"key": "adressFrom",
+											"value": "asdf"
+										},
+										{
+											"key": "addressTo",
+											"value": "asdf"
+										},
+										{
+											"key": "amount",
+											"value": "34.00"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "STRING"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"blockchainFrom\": \"\",\n        \"blockchainTo\": \"\",\n        \"addressTo\": \"\",\n        \"amount\": \"34.00\",\n        \"dateCreate\": \"1947-04-26T15:41:07.646Z\",\n        \"addressContractFrom\": \"\",\n        \"addressContractTo\": \"\",\n        \"adressFrom\": \"\",\n        \"currency\": \"USD\"\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"spbPhone1\": \"dolore qui cillum\",\n    \"spbName1\": \"dolor nulla laboris esse do\",\n    \"visaCardNumber2\": \"dolore minim commodo\",\n    \"visaName2\": \"do fugiat\",\n    \"masterCardNumber3\": \"et nisi minim quis\",\n    \"masterName3\": \"irure\",\n    \"bankAccountPaymentAccount4\": \"ad\",\n    \"bankAccountBIK4\": \"dolor aliquip cillum exercitation\",\n    \"bankAccountName4\": \"quis\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/order/sale?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"sale"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"spbPhone1\": \"dolore qui cillum\",\n    \"spbName1\": \"dolor nulla laboris esse do\",\n    \"visaCardNumber2\": \"dolore minim commodo\",\n    \"visaName2\": \"do fugiat\",\n    \"masterCardNumber3\": \"et nisi minim quis\",\n    \"masterName3\": \"irure\",\n    \"bankAccountPaymentAccount4\": \"ad\",\n    \"bankAccountBIK4\": \"dolor aliquip cillum exercitation\",\n    \"bankAccountName4\": \"quis\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/order/sale?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"sale"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"spbPhone1\": \"dolore qui cillum\",\n    \"spbName1\": \"dolor nulla laboris esse do\",\n    \"visaCardNumber2\": \"dolore minim commodo\",\n    \"visaName2\": \"do fugiat\",\n    \"masterCardNumber3\": \"et nisi minim quis\",\n    \"masterName3\": \"irure\",\n    \"bankAccountPaymentAccount4\": \"ad\",\n    \"bankAccountBIK4\": \"dolor aliquip cillum exercitation\",\n    \"bankAccountName4\": \"quis\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/order/sale?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"sale"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"spbPhone1\": \"dolore qui cillum\",\n    \"spbName1\": \"dolor nulla laboris esse do\",\n    \"visaCardNumber2\": \"dolore minim commodo\",\n    \"visaName2\": \"do fugiat\",\n    \"masterCardNumber3\": \"et nisi minim quis\",\n    \"masterName3\": \"irure\",\n    \"bankAccountPaymentAccount4\": \"ad\",\n    \"bankAccountBIK4\": \"dolor aliquip cillum exercitation\",\n    \"bankAccountName4\": \"quis\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/order/sale?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"order",
+										"sale"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Enable/Disable external wallets",
+			"item": [
+				{
+					"name": "Enable external wallet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"blockchain\": \"\",\n \"addressContract\": \"\",\n \"adress\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/otherCrypto",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"otherCrypto"
+							]
+						},
+						"description": "Request for adding external wallet. Fields(all are string type):\n\n•\tblockchain (Required): Platform’s name of external wallet\n\n•\taddressContract: Wallet’s contract address\n\n•\taddress (Required): Wallet’s address"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"blockchain\": \"officia laboris\",\n    \"addressContract\": \"proident in ut\",\n    \"adress\": \"et esse\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"blockchain\": \"officia laboris\",\n    \"addressContract\": \"proident in ut\",\n    \"adress\": \"et esse\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"blockchain\": \"officia laboris\",\n    \"addressContract\": \"proident in ut\",\n    \"adress\": \"et esse\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"blockchain\": \"officia laboris\",\n    \"addressContract\": \"proident in ut\",\n    \"adress\": \"et esse\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"blockchain\": \"officia laboris\",\n    \"addressContract\": \"proident in ut\",\n    \"adress\": \"et esse\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Disable external wallet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/otherCrypto?blockchain=STRING&addressContract=STRING&address=STRING",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"otherCrypto"
+							],
+							"query": [
+								{
+									"key": "blockchain",
+									"value": "STRING",
+									"description": "(Required) Platform name"
+								},
+								{
+									"key": "addressContract",
+									"value": "STRING",
+									"description": "Wallet’s contract address"
+								},
+								{
+									"key": "address",
+									"value": "STRING",
+									"description": "(Required) Wallet's adress"
+								}
+							]
+						},
+						"description": "Request to disable external wallet. Headers are described below."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto?blockchain=do adipisicing&addressContract=do adipisicing&address=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									],
+									"query": [
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "address",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto?blockchain=do adipisicing&addressContract=do adipisicing&address=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									],
+									"query": [
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "address",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input data\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto?blockchain=do adipisicing&addressContract=do adipisicing&address=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									],
+									"query": [
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "address",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Not found\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto?blockchain=do adipisicing&addressContract=do adipisicing&address=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									],
+									"query": [
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "address",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto?blockchain=do adipisicing&addressContract=do adipisicing&address=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									],
+									"query": [
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "address",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/otherCrypto?blockchain=do adipisicing&addressContract=do adipisicing&address=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"otherCrypto"
+									],
+									"query": [
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "address",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Requests for rate information",
+			"item": [
+				{
+					"name": "Get top50 cryptocurrencies' information",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"rate"
+							]
+						},
+						"description": "Request for top 50 crypto currencies with currency to Zam/dollar rate."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": [\n        {\n            \"blockchain\": \"c\",\n            \"address\": \"\",\n            \"currency\": \"\",\n            \"rateToDollar\": \"\",\n            \"rateToZam\": \"\",\n            \"amount\": \"\",\n            \"dateRate\": \"\",\n            \"addressContract\": \"\"\n        },\n        {\n            \"blockchain\": \"c\",\n            \"address\": \"\",\n            \"currency\": \"\",\n            \"rateToDollar\": \"\",\n            \"rateToZam\": \"\",\n            \"amount\": \"\",\n            \"dateRate\": \"\",\n            \"addressContract\": \"\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Selected cryptocurrency to dollar rate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rate/dollar?currency=BTC&blockchain=BTC&addressContract=STRING",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"rate",
+								"dollar"
+							],
+							"query": [
+								{
+									"key": "currency",
+									"value": "BTC",
+									"description": "(Required) Cryptocurrency shortname"
+								},
+								{
+									"key": "blockchain",
+									"value": "BTC",
+									"description": "(Required) Platform name"
+								},
+								{
+									"key": "addressContract",
+									"value": "STRING",
+									"description": "Cryptocurrency contract address"
+								}
+							]
+						},
+						"description": "Gets rate to dollar. Headers are described below."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/dollar?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"dollar"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"blockchain\": \"\",\n        \"address\": \"\",\n        \"currency\": \"\",\n        \"rateToDollar\": \"\",\n        \"rateToZam\": \"\",\n        \"amount\": \"\",\n        \"dateRate\": \"\",\n        \"addressContract\": \"\"\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/dollar?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"dollar"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/dollar?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"dollar"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/dollar?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"dollar"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/dollar?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"dollar"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Selected cryptocurrency to Zam rate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rate/zam?currency=BTC&blockchain=BTC&addressContract=STRING",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"rate",
+								"zam"
+							],
+							"query": [
+								{
+									"key": "currency",
+									"value": "BTC",
+									"description": "(Required) Cryptocurrency shortname"
+								},
+								{
+									"key": "blockchain",
+									"value": "BTC",
+									"description": "(Required) Platform name"
+								},
+								{
+									"key": "addressContract",
+									"value": "STRING",
+									"description": "Cryptocurrency contract name"
+								}
+							]
+						},
+						"description": "Gets rate to Zam. Headers are described below."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/zam?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"zam"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"blockchain\": \"\",\n        \"address\": \"\",\n        \"currency\": \"\",\n        \"rateToDollar\": \"\",\n        \"rateToZam\": \"\",\n        \"amount\": \"\",\n        \"dateRate\": \"\",\n        \"addressContract\": \"\"\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/zam?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"zam"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/zam?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"zam"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/zam?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"zam"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/rate/zam?currency=do adipisicing&blockchain=do adipisicing&addressContract=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"rate",
+										"zam"
+									],
+									"query": [
+										{
+											"key": "currency",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchain",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContract",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Amount information",
+			"item": [
+				{
+					"name": "Balance check on all connected wallets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/amount",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"amount"
+							]
+						},
+						"description": "Request for balance information on all enabled wallets."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/amount",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"amount"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": [\n        {\n            \"blockchain\": \"\",\n            \"address\": \"\",\n            \"currency\": \"\",\n            \"amount\": \"\",\n            \"addressContract\": \"\"\n        },\n        {\n            \"blockchain\": \"\",\n            \"address\": \"\",\n            \"currency\": \"\",\n            \"amount\": \"\",\n            \"addressContract\": \"\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/amount",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"amount"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/amount",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"amount"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/amount",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"amount"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/amount",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"amount"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unrechable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "History",
+			"item": [
+				{
+					"name": "Transaction history for selected wallet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/history",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"history"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/history",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": [\n        {\n            \"blockchainFrom\": \"\",\n            \"blockchainTo\": \"\",\n            \"addressTo\": \"\",\n            \"amount\": \"\",\n            \"commission\": [\n                {\n                    \"paymentTransaction\": \"\",\n                    \"commissionTransaction\": \"\"\n                },\n                {\n                    \"paymentTransaction\": \"\",\n                    \"commissionTransaction\": \"\"\n                }\n            ],\n            \"dateCreate\": \"\",\n            \"dateConfirm\": \"\",\n            \"addressContractFrom\": \"\",\n            \"addressContractTo\": \"\",\n            \"adressFrom\": \"\",\n            \"currency\": \"\"\n        },\n        {\n            \"blockchainFrom\": \"\",\n            \"blockchainTo\": \"\",\n            \"addressTo\": \"\",\n            \"amount\": \"\",\n            \"commission\": [\n                {\n                    \"paymentTransaction\": \"\",\n                    \"commissionTransaction\": \"\"\n                },\n                {\n                    \"paymentTransaction\": \"\",\n                    \"commissionTransaction\": \"\"\n                }\n            ],\n            \"dateCreate\": \"\",\n            \"dateConfirm\": \"\",\n            \"addressContractFrom\": \"\",\n            \"addressContractTo\": \"\",\n            \"adressFrom\": \"\",\n            \"currency\": \"\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/history",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"history"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/history",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"history"
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/history",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"history"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/history",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"history"
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Notifications management",
+			"item": [
+				{
+					"name": "Update notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications?offset=0&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Startpoint of notification's displaying list"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Desired amount of notifications for one request"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications?offset=0&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"notifications\": [\n            {\n                \"title\": \"Money purchase\",\n                \"text\": \"2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.\",\n                \"date\": \"2020-10-05T10:04:07.666Z\",\n                \"read\": true\n            },\n            {\n                \"title\": \"Money purchase\",\n                \"text\": \"2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.\",\n                \"date\": \"1947-04-26T15:41:07.646Z\",\n                \"read\": true\n            }\n        ],\n        \"pagination\": {\n            \"offset\": 0,\n            \"limit\": 10,\n            \"total\": 100\n        }\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications?offset=0&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications?offset=0&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications?offset=0&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications?offset=0&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Calculation requests",
+			"item": [
+				{
+					"name": "Transaction information request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "<Bearer Token>",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/calculation?priority=MEDIUM&blockchainFrom=STRING&blockchainTo=STRING&addressContractFrom=STRING&addressContractTo=STRING&adressFrom=STRING&addressTo=STRING&amount=STRING&paymentRestrictionTransaction=STRING",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"calculation"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "MEDIUM",
+									"description": "Transaction priority (default value - MEDIUM)"
+								},
+								{
+									"key": "blockchainFrom",
+									"value": "STRING",
+									"description": "(Required) source platform name"
+								},
+								{
+									"key": "blockchainTo",
+									"value": "STRING",
+									"description": "(Required) destiantion platform name"
+								},
+								{
+									"key": "addressContractFrom",
+									"value": "STRING",
+									"description": "Contract adrress on source wallet"
+								},
+								{
+									"key": "addressContractTo",
+									"value": "STRING",
+									"description": "Contract address on destiantion wallet"
+								},
+								{
+									"key": "adressFrom",
+									"value": "STRING",
+									"description": "(Required) soruce wallet address"
+								},
+								{
+									"key": "addressTo",
+									"value": "STRING",
+									"description": "(Required) destiantion wallet address"
+								},
+								{
+									"key": "amount",
+									"value": "STRING",
+									"description": "(Required) cryptrocurrency amount"
+								},
+								{
+									"key": "paymentRestrictionTransaction",
+									"value": "STRING",
+									"description": "Payment restriction for transaction"
+								}
+							]
+						},
+						"description": "Request to get approximate rate and cost of transaction. Headers are described below."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/calculation?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"calculation"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"Success\"\n    },\n    \"data\": {\n        \"blockchainFrom\": \"\",\n        \"blockchainTo\": \"\",\n        \"addressTo\": \"\",\n        \"amount\": \"\",\n        \"commission\": [\n            {\n                \"paymentTransaction\": \"\",\n                \"commissionTransaction\": \"\"\n            },\n            {\n                \"paymentTransaction\": \"\",\n                \"commissionTransaction\": \"\"\n            }\n        ],\n        \"dateActual\": \"n\",\n        \"addressContractFrom\": \"\",\n        \"addressContractTo\": \"\",\n        \"adressFrom\": \"\",\n        \"currency\": \"\"\n    }\n}"
+						},
+						{
+							"name": "Invalid input format",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/calculation?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"calculation"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Invalid input format\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Request timeout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/calculation?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"calculation"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Request Timeout",
+							"code": 408,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Request timeout\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Internal server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/calculation?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"calculation"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Internal server error\"\n    },\n    \"data\": {}\n}"
+						},
+						{
+							"name": "Service is unreachable",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/calculation?priority=MEDIUM&blockchainFrom=do adipisicing&blockchainTo=do adipisicing&addressContractFrom=do adipisicing&addressContractTo=do adipisicing&adressFrom=do adipisicing&addressTo=do adipisicing&amount=do adipisicing&paymentRestrictionTransaction=do adipisicing",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"calculation"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "MEDIUM"
+										},
+										{
+											"key": "blockchainFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "blockchainTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressContractTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "adressFrom",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "addressTo",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "amount",
+											"value": "do adipisicing"
+										},
+										{
+											"key": "paymentRestrictionTransaction",
+											"value": "do adipisicing"
+										}
+									]
+								}
+							},
+							"status": "Service Unavailable",
+							"code": 503,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": \"OK\",\n        \"message\": \"ERROR - Service is unreachable\"\n    },\n    \"data\": {}\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://zam.io",
+			"type": "string"
+		}
+	]
+}

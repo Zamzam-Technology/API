@@ -1,0 +1,2761 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: Zam.io API
+  description: |-
+    A safe wallet to store, manage, send, and receive digital assets. Users need an easy way to access and manage their digital assets. ZamWallet is an application for iOS and Android that allows users to store, access, manage, send, and receive crypto directly from their mobile phones.
+
+    ## General API information
+
+    The Zam.io API that serves for creating and managing Your wallet: 
+    * Registration and account management
+    * Cryptocurrency buy/sell orders
+    * Working with external wallets
+    * Ability to update rate information
+
+    For more information visit [description page](https://github.com/Hz31415/API/blob/gh-pages/test.md)
+
+    ## HTTP Return Codes
+
+    * HTTP `4XX` return codes are used for malformed requests;
+      the issue is on the sender's side.
+    * HTTP `400` return code is used when the WAF Limit (Web Application Firewall) has been violated.
+    * HTTP `404` return code is used when requested data not found.
+    * HTTP `408` return code is used when request timeout exceeded.
+    * HTTP `5XX` return codes are used for internal errors; the issue is on
+      Zam's side.
+      It is important to **NOT** treat this as a failure operation; the execution status is
+      **UNKNOWN** and could have been a success.
+    * HTTP `500` return code is used when internal server error occured.
+    * HTTP `503` return code is used when requested service is unreachable.
+  contact: {}
+host: zam.io
+basePath: /api
+securityDefinitions: {}
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /auth:
+    post:
+      description: "New user registration request. Request fields:\n\n•\tphone(string): User’s phone number. Should contain at least 10 characters.\n\n•\tfullName(string): User’s full name(Surname, Name, Patronymic/Middle Name).\n\n•\trefCode(string): The referral code that user received if was invited.\n\n•\tcodeRequest(object): Subrequest for number verification. Contains “phone” field that was mentioned above."
+      summary: New User registration
+      tags:
+        - Account management requests
+      operationId: NewUserregistration
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/NewUserregistrationRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                passportMessage: Passport phrase
+                agreement:
+                  id: 173e4567-e89b-12d3-a456-426624174000
+                  name: Security agreement
+                  url: /api/auth/documents/173e4567-e89b-12d3-a456-426614174000
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /auth/change:
+    post:
+      description: Simple password change request.
+      summary: Password Change
+      tags:
+        - Account management requests
+      operationId: PasswordChange
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordChangeRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /auth/documents/{documentId}:
+    get:
+      description: Security agreement for user to accept.
+      summary: Request for security agreements
+      tags:
+        - Account management requests
+      operationId: Requestforsecurityagreements
+      deprecated: false
+      produces:
+        - text/plain
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: documentId
+          in: path
+          required: true
+          type: string
+          description: (Required) Document ID
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            text/plain: Security agreement file
+          headers: {}
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Notfound1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Not found
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /auth/delete:
+    delete:
+      description: Request to delete authorized account.
+      summary: Delete account
+      tags:
+        - Account management requests
+      operationId: Deleteaccount
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success2'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data: {}
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Ivalidinputdata1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Notfound1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Not found
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservereroor1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /auth/privateKey:
+    post:
+      description: Request for Zam wallet's private key generation.
+      summary: Generate private key
+      tags:
+        - Account management requests
+      operationId: Generateprivatekey
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success3'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                privateKey: bd0c8e3bd998a500b0984584a7245ca0
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /auth/token:
+    post:
+      description: "Request for authorization token. Contains 4 fields (all are string type):\n\n•\ttoken: Last expired token\n\n•\tdeviceId: Device’s UUID\n\n•\tlogin: User’s login\n\n•\tpassword: Hash of user’s password"
+      summary: Update token
+      tags:
+        - Account management requests
+      operationId: Updatetoken
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/UpdatetokenRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success4'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                token: 94a08da1fecbb6e8b46990538c7b50b2
+                agreement:
+                  id: 173e4567-e89b-12d3-a456-426624174000
+                  name: Security agreement
+                  url: /api/auth/documents/173e4567-e89b-12d3-a456-426614174000
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Notfound1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Not found
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /order:
+    get:
+      description: Request for transaction order to buy/sell cryptocurrency. Headers of request are described below
+      summary: Request for transaction order generation
+      tags:
+        - Order requests
+      operationId: Requestfortransactionordergeneration
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: priority
+          in: query
+          required: true
+          type: string
+          description: Transaction priority (default value - MEDIUM)
+        - name: blockchainFrom
+          in: query
+          required: true
+          type: string
+          description: (Required) source platform name
+        - name: blockchainTo
+          in: query
+          required: true
+          type: string
+          description: (Required) destiantion platform name
+        - name: addressContractFrom
+          in: query
+          required: true
+          type: string
+          description: Contract adrress on source wallet
+        - name: addressContractTo
+          in: query
+          required: true
+          type: string
+          description: Contract address on destiantion wallet
+        - name: adressFrom
+          in: query
+          required: true
+          type: string
+          description: (Required) soruce wallet address
+        - name: addressTo
+          in: query
+          required: true
+          type: string
+          description: (Required) destiantion wallet address
+        - name: amount
+          in: query
+          required: true
+          type: number
+          format: double
+          description: (Required) cryptrocurrency amount
+        - name: paymentRestrictionTransaction
+          in: query
+          required: true
+          type: string
+          description: Payment restriction for transaction
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success5'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                blockchainFrom: Binance
+                blockchainTo: Binance
+                addressTo: 12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH
+                amount: '3.45'
+                dateCreate: '1947-04-26T15:41:07.646Z'
+                addressContractFrom: STRING
+                addressContractTo: STRING
+                adressFrom: cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5
+                currency: BTC
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /order/purchase:
+    put:
+      description: The buy operation that follows after receiving transaction order.
+      summary: Order for cyptocurrency buy
+      tags:
+        - Order requests
+      operationId: Orderforcyptocurrencybuy
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: priority
+          in: query
+          required: true
+          type: string
+          description: Transaction priority (default value - MEDIUM)
+        - name: blockchainTo
+          in: query
+          required: true
+          type: string
+          description: (Required) destiantion platform name
+        - name: addressContractTo
+          in: query
+          required: true
+          type: string
+          description: Contract address on destiantion wallet
+        - name: addressTo
+          in: query
+          required: true
+          type: string
+          description: (Required) destiantion wallet address
+        - name: amount
+          in: query
+          required: true
+          type: number
+          format: double
+          description: (Required) cryptrocurrency amount to buy
+        - name: paymentRestrictionTransaction
+          in: query
+          required: true
+          type: string
+          description: Payment restriction for transaction
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success6'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                blockchainTo: Binance
+                addressTo: 12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH
+                amount: '3.45'
+                dateCreate: '1947-04-26T15:41:07.646Z'
+                order: STRING
+                addressContractTo: STRING
+                currency: BTC
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunrechable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /order/sale:
+    put:
+      description: The sell operation that follows after receiving transaction order.
+      summary: Order for cyptocurrency sell
+      tags:
+        - Order requests
+      operationId: Orderforcyptocurrencysell
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: priority
+          in: query
+          required: true
+          type: string
+          description: Transaction priority (default value - MEDIUM)
+        - name: blockchainFrom
+          in: query
+          required: true
+          type: string
+          description: (Required) source platform name
+        - name: blockchainTo
+          in: query
+          required: true
+          type: string
+          description: (Required) destiantion platform name (measured wallet on Zam side)
+        - name: addressContractFrom
+          in: query
+          required: true
+          type: string
+          description: Contract adrress on source wallet
+        - name: addressContractTo
+          in: query
+          required: true
+          type: string
+          description: Contract address on destiantion wallet (measured wallet on Zam side)
+        - name: adressFrom
+          in: query
+          required: true
+          type: number
+          format: double
+          description: (Required) soruce wallet address
+        - name: addressTo
+          in: query
+          required: true
+          type: string
+          description: (Required) destiantion wallet address (measured wallet on Zam side)
+        - name: amount
+          in: query
+          required: true
+          type: string
+          description: (Required) cryptrocurrency amount to sell
+        - name: paymentRestrictionTransaction
+          in: query
+          required: true
+          type: string
+          description: Payment restriction for transaction
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/OrderforcyptocurrencysellRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success5'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                blockchainFrom: ''
+                blockchainTo: ''
+                addressTo: ''
+                amount: '34.00'
+                dateCreate: '1947-04-26T15:41:07.646Z'
+                addressContractFrom: ''
+                addressContractTo: ''
+                adressFrom: ''
+                currency: USD
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /otherCrypto:
+    post:
+      description: "Request for adding external wallet. Fields(all are string type):\n\n•\tblockchain (Required): Platform’s name of external wallet\n\n•\taddressContract: Wallet’s contract address\n\n•\taddress (Required): Wallet’s address"
+      summary: Enable external wallet
+      tags:
+        - Enable/Disable external wallets
+      operationId: Enableexternalwallet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/EnableexternalwalletRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success2'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data: {}
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+    delete:
+      description: Request to disable external wallet. Headers are described below.
+      summary: Disable external wallet
+      tags:
+        - Enable/Disable external wallets
+      operationId: Disableexternalwallet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: blockchain
+          in: query
+          required: true
+          type: string
+          description: (Required) Platform name
+        - name: addressContract
+          in: query
+          required: true
+          type: string
+          description: Wallet’s contract address
+        - name: address
+          in: query
+          required: true
+          type: string
+          description: (Required) Wallet's adress
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success2'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data: {}
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input data
+              data: {}
+          headers: {}
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Notfound1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Not found
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /rate:
+    get:
+      description: Request for top 50 crypto currencies with currency to Zam/dollar rate.
+      summary: Get top50 cryptocurrencies' information
+      tags:
+        - Requests for rate information
+      operationId: Gettop50cryptocurrencies'information
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success10'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                - blockchain: c
+                  address: ''
+                  currency: ''
+                  rateToDollar: ''
+                  rateToZam: ''
+                  amount: ''
+                  dateRate: ''
+                  addressContract: ''
+                - blockchain: c
+                  address: ''
+                  currency: ''
+                  rateToDollar: ''
+                  rateToZam: ''
+                  amount: ''
+                  dateRate: ''
+                  addressContract: ''
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /rate/dollar:
+    get:
+      description: Gets rate to dollar. Headers are described below.
+      summary: Selected cryptocurrency to dollar rate
+      tags:
+        - Requests for rate information
+      operationId: Selectedcryptocurrencytodollarrate
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: currency
+          in: query
+          required: true
+          type: string
+          description: (Required) Cryptocurrency shortname
+        - name: blockchain
+          in: query
+          required: true
+          type: string
+          description: (Required) Platform name
+        - name: addressContract
+          in: query
+          required: true
+          type: string
+          description: Cryptocurrency contract address
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success11'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                blockchain: ''
+                address: ''
+                currency: ''
+                rateToDollar: ''
+                rateToZam: ''
+                amount: ''
+                dateRate: ''
+                addressContract: ''
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /rate/zam:
+    get:
+      description: Gets rate to Zam. Headers are described below.
+      summary: Selected cryptocurrency to Zam rate
+      tags:
+        - Requests for rate information
+      operationId: SelectedcryptocurrencytoZamrate
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: currency
+          in: query
+          required: true
+          type: string
+          description: (Required) Cryptocurrency shortname
+        - name: blockchain
+          in: query
+          required: true
+          type: string
+          description: (Required) Platform name
+        - name: addressContract
+          in: query
+          required: true
+          type: string
+          description: Cryptocurrency contract name
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success11'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                blockchain: ''
+                address: ''
+                currency: ''
+                rateToDollar: ''
+                rateToZam: ''
+                amount: ''
+                dateRate: ''
+                addressContract: ''
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /amount:
+    get:
+      description: Request for balance information on all enabled wallets.
+      summary: Balance check on all connected wallets
+      tags:
+        - Amount information
+      operationId: Balancecheckonallconnectedwallets
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success13'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                - blockchain: ''
+                  address: ''
+                  currency: ''
+                  amount: ''
+                  addressContract: ''
+                - blockchain: ''
+                  address: ''
+                  currency: ''
+                  amount: ''
+                  addressContract: ''
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unrechable
+              data: {}
+          headers: {}
+  /history:
+    get:
+      summary: Transaction history for selected wallet
+      tags:
+        - History
+      operationId: Transactionhistoryforselectedwallet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success14'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                - blockchainFrom: ''
+                  blockchainTo: ''
+                  addressTo: ''
+                  amount: ''
+                  commission:
+                    - paymentTransaction: ''
+                      commissionTransaction: ''
+                    - paymentTransaction: ''
+                      commissionTransaction: ''
+                  dateCreate: ''
+                  dateConfirm: ''
+                  addressContractFrom: ''
+                  addressContractTo: ''
+                  adressFrom: ''
+                  currency: ''
+                - blockchainFrom: ''
+                  blockchainTo: ''
+                  addressTo: ''
+                  amount: ''
+                  commission:
+                    - paymentTransaction: ''
+                      commissionTransaction: ''
+                    - paymentTransaction: ''
+                      commissionTransaction: ''
+                  dateCreate: ''
+                  dateConfirm: ''
+                  addressContractFrom: ''
+                  addressContractTo: ''
+                  adressFrom: ''
+                  currency: ''
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /notifications:
+    get:
+      summary: Update notifications
+      tags:
+        - Notifications management
+      operationId: Updatenotifications
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: offset
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: Startpoint of notification's displaying list
+        - name: limit
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: Desired amount of notifications for one request
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success15'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                notifications:
+                  - title: Money purchase
+                    text: 2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.
+                    date: '2020-10-05T10:04:07.666Z'
+                    read: true
+                  - title: Money purchase
+                    text: 2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.
+                    date: '1947-04-26T15:41:07.646Z'
+                    read: true
+                pagination:
+                  offset: 0
+                  limit: 10
+                  total: 100
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+  /calculation:
+    get:
+      description: Request to get approximate rate and cost of transaction. Headers are described below.
+      summary: Transaction information request
+      tags:
+        - Calculation requests
+      operationId: Transactioninformationrequest
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          default: Bearer {token}
+          type: string
+        - name: priority
+          in: query
+          required: true
+          type: string
+          description: Transaction priority (default value - MEDIUM)
+        - name: blockchainFrom
+          in: query
+          required: true
+          type: string
+          description: (Required) source platform name
+        - name: blockchainTo
+          in: query
+          required: true
+          type: string
+          description: (Required) destiantion platform name
+        - name: addressContractFrom
+          in: query
+          required: true
+          type: string
+          description: Contract adrress on source wallet
+        - name: addressContractTo
+          in: query
+          required: true
+          type: string
+          description: Contract address on destiantion wallet
+        - name: adressFrom
+          in: query
+          required: true
+          type: string
+          description: (Required) soruce wallet address
+        - name: addressTo
+          in: query
+          required: true
+          type: string
+          description: (Required) destiantion wallet address
+        - name: amount
+          in: query
+          required: true
+          type: string
+          description: (Required) cryptrocurrency amount
+        - name: paymentRestrictionTransaction
+          in: query
+          required: true
+          type: string
+          description: Payment restriction for transaction
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Success16'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: Success
+              data:
+                blockchainFrom: ''
+                blockchainTo: ''
+                addressTo: ''
+                amount: ''
+                commission:
+                  - paymentTransaction: ''
+                    commissionTransaction: ''
+                  - paymentTransaction: ''
+                    commissionTransaction: ''
+                dateActual: 'n'
+                addressContractFrom: ''
+                addressContractTo: ''
+                adressFrom: ''
+                currency: ''
+          headers: {}
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Invalidinputformat1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Invalid input format
+              data: {}
+          headers: {}
+        '408':
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/RequestTimeout1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Request timeout
+              data: {}
+          headers: {}
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Internalservererror1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Internal server error
+              data: {}
+          headers: {}
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Serviceisunreachable1'
+          examples:
+            application/json:
+              meta:
+                status: OK
+                message: ERROR - Service is unreachable
+              data: {}
+          headers: {}
+definitions:
+  NewUserregistrationRequest:
+    title: NewUserregistrationRequest
+    example:
+      phone: '0647744360'
+      fullName: Name Surname
+      refCode: '{referral code}'
+      codeRequest:
+        phone: '0647744360'
+    type: object
+    properties:
+      phone:
+        type: string
+      fullName:
+        type: string
+      refCode:
+        type: string
+      codeRequest:
+        $ref: '#/definitions/CodeRequest'
+    required:
+      - phone
+      - fullName
+      - refCode
+      - codeRequest
+  CodeRequest:
+    title: CodeRequest
+    example:
+      phone: '0647744360'
+    type: object
+    properties:
+      phone:
+        type: string
+    required:
+      - phone
+  Success:
+    title: Success
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        passportMessage: Passport phrase
+        agreement:
+          id: 173e4567-e89b-12d3-a456-426624174000
+          name: Security agreement
+          url: /api/auth/documents/173e4567-e89b-12d3-a456-426614174000
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        $ref: '#/definitions/Data'
+    required:
+      - meta
+      - data
+  Meta:
+    title: Meta
+    example:
+      status: OK
+      message: Success
+    type: object
+    properties:
+      status:
+        type: string
+      message:
+        type: string
+    required:
+      - status
+      - message
+  Data:
+    title: Data
+    example:
+      passportMessage: Passport phrase
+      agreement:
+        id: 173e4567-e89b-12d3-a456-426624174000
+        name: Security agreement
+        url: /api/auth/documents/173e4567-e89b-12d3-a456-426614174000
+    type: object
+    properties:
+      passportMessage:
+        type: string
+      agreement:
+        $ref: '#/definitions/Agreement'
+    required:
+      - passportMessage
+      - agreement
+  Agreement:
+    title: Agreement
+    example:
+      id: 173e4567-e89b-12d3-a456-426624174000
+      name: Security agreement
+      url: /api/auth/documents/173e4567-e89b-12d3-a456-426614174000
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      url:
+        type: string
+    required:
+      - id
+      - name
+      - url
+  Invalidinputformat1:
+    title: Invalidinputformat1
+    example:
+      meta:
+        status: OK
+        message: ERROR - Invalid input format
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  RequestTimeout1:
+    title: RequestTimeout1
+    example:
+      meta:
+        status: OK
+        message: ERROR - Request timeout
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  Internalservererror1:
+    title: Internalservererror1
+    example:
+      meta:
+        status: OK
+        message: ERROR - Internal server error
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  Serviceisunreachable1:
+    title: Serviceisunreachable1
+    example:
+      meta:
+        status: OK
+        message: ERROR - Service is unreachable
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  PasswordChangeRequest:
+    title: PasswordChangeRequest
+    example:
+      oldPassword: '{Old password''s hash}'
+      newPassword: '{New password''s hash}'
+    type: object
+    properties:
+      oldPassword:
+        type: string
+      newPassword:
+        type: string
+    required:
+      - oldPassword
+      - newPassword
+  Success1:
+    title: Success1
+    example:
+      meta:
+        status: OK
+        message: Success
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+    required:
+      - meta
+  Notfound1:
+    title: Notfound1
+    example:
+      meta:
+        status: OK
+        message: ERROR - Not found
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  Success2:
+    title: Success2
+    example:
+      meta:
+        status: OK
+        message: Success
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  Ivalidinputdata1:
+    title: Ivalidinputdata1
+    example:
+      meta:
+        status: OK
+        message: ERROR - Invalid input format
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  Internalservereroor1:
+    title: Internalservereroor1
+    example:
+      meta:
+        status: OK
+        message: ERROR - Internal server error
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  Success3:
+    title: Success3
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        privateKey: bd0c8e3bd998a500b0984584a7245ca0
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        $ref: '#/definitions/Data1'
+    required:
+      - meta
+      - data
+  Data1:
+    title: Data1
+    example:
+      privateKey: bd0c8e3bd998a500b0984584a7245ca0
+    type: object
+    properties:
+      privateKey:
+        type: string
+    required:
+      - privateKey
+  UpdatetokenRequest:
+    title: UpdatetokenRequest
+    example:
+      token: 94a08da1fecbb6e8b46990538c7b50b2
+      deviceId: 123e4567-e89b-12d3-a456-426614174000
+      login: UserName
+      password: fb29ed3264c5a92bcf74eccd7489e828
+    type: object
+    properties:
+      token:
+        type: string
+      deviceId:
+        type: string
+      login:
+        type: string
+      password:
+        type: string
+    required:
+      - token
+      - deviceId
+      - login
+      - password
+  Success4:
+    title: Success4
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        token: 94a08da1fecbb6e8b46990538c7b50b2
+        agreement:
+          id: 173e4567-e89b-12d3-a456-426624174000
+          name: Security agreement
+          url: /api/auth/documents/173e4567-e89b-12d3-a456-426614174000
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        $ref: '#/definitions/Data2'
+    required:
+      - meta
+      - data
+  Data2:
+    title: Data2
+    example:
+      token: 94a08da1fecbb6e8b46990538c7b50b2
+      agreement:
+        id: 173e4567-e89b-12d3-a456-426624174000
+        name: Security agreement
+        url: /api/auth/documents/173e4567-e89b-12d3-a456-426614174000
+    type: object
+    properties:
+      token:
+        type: string
+      agreement:
+        $ref: '#/definitions/Agreement'
+    required:
+      - token
+      - agreement
+  Success5:
+    title: Success5
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        blockchainFrom: Binance
+        blockchainTo: Binance
+        addressTo: 12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH
+        amount: '3.45'
+        dateCreate: '1947-04-26T15:41:07.646Z'
+        addressContractFrom: STRING
+        addressContractTo: STRING
+        adressFrom: cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5
+        currency: BTC
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        $ref: '#/definitions/Data3'
+    required:
+      - meta
+      - data
+  Data3:
+    title: Data3
+    example:
+      blockchainFrom: Binance
+      blockchainTo: Binance
+      addressTo: 12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH
+      amount: '3.45'
+      dateCreate: '1947-04-26T15:41:07.646Z'
+      addressContractFrom: STRING
+      addressContractTo: STRING
+      adressFrom: cosmos18ta688t40kmped54stvdgvgrazmyh0zqwhmhf5
+      currency: BTC
+    type: object
+    properties:
+      blockchainFrom:
+        type: string
+      blockchainTo:
+        type: string
+      addressTo:
+        type: string
+      amount:
+        type: string
+      dateCreate:
+        type: string
+      addressContractFrom:
+        type: string
+      addressContractTo:
+        type: string
+      adressFrom:
+        type: string
+      currency:
+        type: string
+    required:
+      - blockchainFrom
+      - blockchainTo
+      - addressTo
+      - amount
+      - dateCreate
+      - addressContractFrom
+      - addressContractTo
+      - adressFrom
+      - currency
+  Success6:
+    title: Success6
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        blockchainTo: Binance
+        addressTo: 12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH
+        amount: '3.45'
+        dateCreate: '1947-04-26T15:41:07.646Z'
+        order: STRING
+        addressContractTo: STRING
+        currency: BTC
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        $ref: '#/definitions/Data4'
+    required:
+      - meta
+      - data
+  Data4:
+    title: Data4
+    example:
+      blockchainTo: Binance
+      addressTo: 12PUTiN2VjQQzkmSNU7AauHNrQSuadbmhH
+      amount: '3.45'
+      dateCreate: '1947-04-26T15:41:07.646Z'
+      order: STRING
+      addressContractTo: STRING
+      currency: BTC
+    type: object
+    properties:
+      blockchainTo:
+        type: string
+      addressTo:
+        type: string
+      amount:
+        type: string
+      dateCreate:
+        type: string
+      order:
+        type: string
+      addressContractTo:
+        type: string
+      currency:
+        type: string
+    required:
+      - blockchainTo
+      - addressTo
+      - amount
+      - dateCreate
+      - order
+      - addressContractTo
+      - currency
+  Serviceisunrechable1:
+    title: Serviceisunrechable1
+    example:
+      meta:
+        status: OK
+        message: ERROR - Service is unreachable
+      data: {}
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: object
+    required:
+      - meta
+      - data
+  OrderforcyptocurrencysellRequest:
+    title: OrderforcyptocurrencysellRequest
+    example:
+      spbPhone1: ''
+      spbName1: ''
+      visaCardNumber2: ''
+      visaName2: ''
+      masterCardNumber3: ''
+      masterName3: ''
+      bankAccountPaymentAccount4: ''
+      bankAccountBIK4: ''
+      bankAccountName4: ''
+    type: object
+    properties:
+      spbPhone1:
+        type: string
+      spbName1:
+        type: string
+      visaCardNumber2:
+        type: string
+      visaName2:
+        type: string
+      masterCardNumber3:
+        type: string
+      masterName3:
+        type: string
+      bankAccountPaymentAccount4:
+        type: string
+      bankAccountBIK4:
+        type: string
+      bankAccountName4:
+        type: string
+    required:
+      - spbPhone1
+      - spbName1
+      - visaCardNumber2
+      - visaName2
+      - masterCardNumber3
+      - masterName3
+      - bankAccountPaymentAccount4
+      - bankAccountBIK4
+      - bankAccountName4
+  EnableexternalwalletRequest:
+    title: EnableexternalwalletRequest
+    example:
+      blockchain: ''
+      addressContract: ''
+      adress: ''
+    type: object
+    properties:
+      blockchain:
+        type: string
+      addressContract:
+        type: string
+      adress:
+        type: string
+    required:
+      - blockchain
+      - addressContract
+      - adress
+  Success10:
+    title: Success10
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        - blockchain: c
+          address: ''
+          currency: ''
+          rateToDollar: ''
+          rateToZam: ''
+          amount: ''
+          dateRate: ''
+          addressContract: ''
+        - blockchain: c
+          address: ''
+          currency: ''
+          rateToDollar: ''
+          rateToZam: ''
+          amount: ''
+          dateRate: ''
+          addressContract: ''
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Data6'
+    required:
+      - meta
+      - data
+  Data6:
+    title: Data6
+    example:
+      blockchain: c
+      address: ''
+      currency: ''
+      rateToDollar: ''
+      rateToZam: ''
+      amount: ''
+      dateRate: ''
+      addressContract: ''
+    type: object
+    properties:
+      blockchain:
+        type: string
+      address:
+        type: string
+      currency:
+        type: string
+      rateToDollar:
+        type: string
+      rateToZam:
+        type: string
+      amount:
+        type: string
+      dateRate:
+        type: string
+      addressContract:
+        type: string
+    required:
+      - blockchain
+      - address
+      - currency
+      - rateToDollar
+      - rateToZam
+      - amount
+      - dateRate
+      - addressContract
+  Success11:
+    title: Success11
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        blockchain: ''
+        address: ''
+        currency: ''
+        rateToDollar: ''
+        rateToZam: ''
+        amount: ''
+        dateRate: ''
+        addressContract: ''
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        $ref: '#/definitions/Data6'
+    required:
+      - meta
+      - data
+  Success13:
+    title: Success13
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        - blockchain: ''
+          address: ''
+          currency: ''
+          amount: ''
+          addressContract: ''
+        - blockchain: ''
+          address: ''
+          currency: ''
+          amount: ''
+          addressContract: ''
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Data9'
+    required:
+      - meta
+      - data
+  Data9:
+    title: Data9
+    example:
+      blockchain: ''
+      address: ''
+      currency: ''
+      amount: ''
+      addressContract: ''
+    type: object
+    properties:
+      blockchain:
+        type: string
+      address:
+        type: string
+      currency:
+        type: string
+      amount:
+        type: string
+      addressContract:
+        type: string
+    required:
+      - blockchain
+      - address
+      - currency
+      - amount
+      - addressContract
+  Success14:
+    title: Success14
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        - blockchainFrom: ''
+          blockchainTo: ''
+          addressTo: ''
+          amount: ''
+          commission:
+            - paymentTransaction: ''
+              commissionTransaction: ''
+            - paymentTransaction: ''
+              commissionTransaction: ''
+          dateCreate: ''
+          dateConfirm: ''
+          addressContractFrom: ''
+          addressContractTo: ''
+          adressFrom: ''
+          currency: ''
+        - blockchainFrom: ''
+          blockchainTo: ''
+          addressTo: ''
+          amount: ''
+          commission:
+            - paymentTransaction: ''
+              commissionTransaction: ''
+            - paymentTransaction: ''
+              commissionTransaction: ''
+          dateCreate: ''
+          dateConfirm: ''
+          addressContractFrom: ''
+          addressContractTo: ''
+          adressFrom: ''
+          currency: ''
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Data10'
+    required:
+      - meta
+      - data
+  Data10:
+    title: Data10
+    example:
+      blockchainFrom: ''
+      blockchainTo: ''
+      addressTo: ''
+      amount: ''
+      commission:
+        - paymentTransaction: ''
+          commissionTransaction: ''
+        - paymentTransaction: ''
+          commissionTransaction: ''
+      dateCreate: ''
+      dateConfirm: ''
+      addressContractFrom: ''
+      addressContractTo: ''
+      adressFrom: ''
+      currency: ''
+    type: object
+    properties:
+      blockchainFrom:
+        type: string
+      blockchainTo:
+        type: string
+      addressTo:
+        type: string
+      amount:
+        type: string
+      commission:
+        type: array
+        items:
+          $ref: '#/definitions/Commission'
+      dateCreate:
+        type: string
+      dateConfirm:
+        type: string
+      addressContractFrom:
+        type: string
+      addressContractTo:
+        type: string
+      adressFrom:
+        type: string
+      currency:
+        type: string
+    required:
+      - blockchainFrom
+      - blockchainTo
+      - addressTo
+      - amount
+      - commission
+      - dateCreate
+      - dateConfirm
+      - addressContractFrom
+      - addressContractTo
+      - adressFrom
+      - currency
+  Commission:
+    title: Commission
+    example:
+      paymentTransaction: ''
+      commissionTransaction: ''
+    type: object
+    properties:
+      paymentTransaction:
+        type: string
+      commissionTransaction:
+        type: string
+    required:
+      - paymentTransaction
+      - commissionTransaction
+  Success15:
+    title: Success15
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        notifications:
+          - title: Money purchase
+            text: 2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.
+            date: '2020-10-05T10:04:07.666Z'
+            read: true
+          - title: Money purchase
+            text: 2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.
+            date: '1947-04-26T15:41:07.646Z'
+            read: true
+        pagination:
+          offset: 0
+          limit: 10
+          total: 100
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        $ref: '#/definitions/Data11'
+    required:
+      - meta
+      - data
+  Data11:
+    title: Data11
+    example:
+      notifications:
+        - title: Money purchase
+          text: 2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.
+          date: '2020-10-05T10:04:07.666Z'
+          read: true
+        - title: Money purchase
+          text: 2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.
+          date: '1947-04-26T15:41:07.646Z'
+          read: true
+      pagination:
+        offset: 0
+        limit: 10
+        total: 100
+    type: object
+    properties:
+      notifications:
+        type: array
+        items:
+          $ref: '#/definitions/Notification'
+      pagination:
+        $ref: '#/definitions/Pagination'
+    required:
+      - notifications
+      - pagination
+  Notification:
+    title: Notification
+    example:
+      title: Money purchase
+      text: 2.1 ETH were purchased to Your wallet (address ...), from address ... в 09:02:57 18.06.2021y.
+      date: '2020-10-05T10:04:07.666Z'
+      read: true
+    type: object
+    properties:
+      title:
+        type: string
+      text:
+        type: string
+      date:
+        type: string
+      read:
+        type: boolean
+    required:
+      - title
+      - text
+      - date
+      - read
+  Pagination:
+    title: Pagination
+    example:
+      offset: 0
+      limit: 10
+      total: 100
+    type: object
+    properties:
+      offset:
+        type: integer
+        format: int32
+      limit:
+        type: integer
+        format: int32
+      total:
+        type: integer
+        format: int32
+    required:
+      - offset
+      - limit
+      - total
+  Success16:
+    title: Success16
+    example:
+      meta:
+        status: OK
+        message: Success
+      data:
+        blockchainFrom: ''
+        blockchainTo: ''
+        addressTo: ''
+        amount: ''
+        commission:
+          - paymentTransaction: ''
+            commissionTransaction: ''
+          - paymentTransaction: ''
+            commissionTransaction: ''
+        dateActual: 'n'
+        addressContractFrom: ''
+        addressContractTo: ''
+        adressFrom: ''
+        currency: ''
+    type: object
+    properties:
+      meta:
+        $ref: '#/definitions/Meta'
+      data:
+        $ref: '#/definitions/Data12'
+    required:
+      - meta
+      - data
+  Data12:
+    title: Data12
+    example:
+      blockchainFrom: ''
+      blockchainTo: ''
+      addressTo: ''
+      amount: ''
+      commission:
+        - paymentTransaction: ''
+          commissionTransaction: ''
+        - paymentTransaction: ''
+          commissionTransaction: ''
+      dateActual: 'n'
+      addressContractFrom: ''
+      addressContractTo: ''
+      adressFrom: ''
+      currency: ''
+    type: object
+    properties:
+      blockchainFrom:
+        type: string
+      blockchainTo:
+        type: string
+      addressTo:
+        type: string
+      amount:
+        type: string
+      commission:
+        type: array
+        items:
+          $ref: '#/definitions/Commission'
+      dateActual:
+        type: string
+      addressContractFrom:
+        type: string
+      addressContractTo:
+        type: string
+      adressFrom:
+        type: string
+      currency:
+        type: string
+    required:
+      - blockchainFrom
+      - blockchainTo
+      - addressTo
+      - amount
+      - commission
+      - dateActual
+      - addressContractFrom
+      - addressContractTo
+      - adressFrom
+      - currency
+tags:
+  - name: Account management requests
+  - name: Order requests
+  - name: Enable/Disable external wallets
+  - name: Requests for rate information
+  - name: Amount information
+  - name: History
+  - name: Notifications management
+  - name: Calculation requests
