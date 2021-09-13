@@ -6,6 +6,9 @@
 
 
 
+
+  - [Introduction](#introduction)
+  - [Additional documents](#additional-documents)
   - [General API Information](#general-api-information)
   - [HTTP Return Codes](#http-return-codes)
   - [Error Codes](#error-codes)
@@ -37,6 +40,14 @@
     - [Update notifications](#update-notifications)
   - [Calculation requests](#calculation-requests)
     - [Transaction information request](#transaction-information-request)
+
+# Introduction
+A safe wallet to store, manage, send, and receive digital assets. Users need an easy way to access and manage their digital assets. ZamWallet is an application for iOS and Android that allows users to store, access, manage, send, and receive crypto directly from their mobile phones.
+
+# Additional documents
+* [API's yaml](https://github.com/Zamzam-Technology/API/blob/main/ZAM.IO_API_PROTOTYPE_yaml.yml)
+* [API's swagger](https://github.com/Zamzam-Technology/API/blob/main/ZAM.IO_API_PROTOTYPE_swagger.json)
+* [API's postman collection](https://github.com/Zamzam-Technology/API/blob/main/API_Postman_Collection.json)
 
 # General API information
 The Zam.io API that serves for creating and managing Your wallet:
