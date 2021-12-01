@@ -89,7 +89,7 @@ Sample Payload below:
 
 The response always consist of two objects `meta` and `data`.
 
-The `meta` object has two parameters `status` that could be `"OK"` or `"ERROR"` and `message` with status describtion values: `"SUCCESS"` `"Not found"` and etc..
+The `meta` object has two parameters `status` that could be `"OK"` or `"ERROR"` and `message` with status description values: `"SUCCESS"` `"Not found"` and etc..
 `data` object will contain either no object or response's payload.
 
 # Wallet management API
